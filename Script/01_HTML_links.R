@@ -1,11 +1,11 @@
 library(rvest)
 library(tidyverse)
 
-url_beppe_blog <- "https://beppegrillo.it/"
-download.file(url_beppe_blog, destfile = here::here("beppeblog.html"))
+url_beppe_blog <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
+download.file(url, destfile = here::here("beppeblog.html"))
 
-# HTML_FIRST TRY ---------
+r <- read_html(here::here("beppeblog.html")) %>% 
+  html_elements(css = "a") %>% 
+  html_text(trim = TRUE)
 
-post_links <- read_html(here::here("beppeblog.html")) %>% 
-  html_elements(css="h3 a")
-
+r
