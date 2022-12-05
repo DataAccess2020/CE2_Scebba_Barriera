@@ -4,7 +4,7 @@ library(tidyverse)
 library(httr)
 
 
-url_archive <- "https://beppegrillo.it/category/archivio/2016/"
+url_archive <- "https://beppegrillo.it/category/archivio/2016/page/"
 
 
 download.file(url="https://beppegrillo.it/category/archivio/2016/", 
@@ -16,7 +16,7 @@ links_2016
 
 
 
-download_politely <- function(from_url, to_html , my_email, my_agent=R.Version()$version.string) {
+download_politely <- function(from_url, to_html , my_email, my_agent=user_agent) {
   
   stopifnot(is.character(from_url))
   stopifnot(is.character(to_html))
@@ -24,10 +24,10 @@ download_politely <- function(from_url, to_html , my_email, my_agent=R.Version()
 
 req <- httr::GET(url = from_url,
                  add_headers(
-                   From = email,
+                   From = my_email,
                    `User-Agent` = R.Version()$version.string
                  )
-                 )
+  )
 
 
 if (httr::http_status(req)$message == "Success: OK") {
@@ -38,9 +38,9 @@ if (httr::http_status(req)$message == "Success: OK") {
 }
 }
 
-download_politely(from_url= url_archive,
-                  to_html = here::here("arc_2016"),
-                  my_email=email)
+download_politely(from_url= "https://beppegrillo.it/category/archivio/2016/page/",
+                  to_html = here::here("archive_2016.html"),
+                  my_email= "barrieragaia.uni@gmail.com")
 
 dir.create("post_2016")
 
