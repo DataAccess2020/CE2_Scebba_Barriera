@@ -18,6 +18,9 @@ download.file(url="https://beppegrillo.it/category/archivio/2016",
 
 download_politely <- function(from_url, to_html , my_email, my_agent)
 
+  
+  
+  
 req <- httr:GET(url=url2,
                 add_headers(
                   from=email,
@@ -31,8 +34,8 @@ download_politely(from_url = url2,
 for (i in seq_along(links_2016)) {
   cat(i, " ")
   
-  RCurl::getURL(url=url2, httpheader=c(from=email,
-                                      'User-Agent'= user_agent))
+download_politely(from_url = links_2016[i],
+                  to_html = here::here("post_2016", str_c()))
   Sys.sleep(2)
 }
 
