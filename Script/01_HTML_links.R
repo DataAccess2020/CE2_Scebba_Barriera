@@ -9,3 +9,8 @@ library(XML)
 links <- XML::getHTMLLinks(doc= beppe_page, externalOnly = T, relative = F)
 
 links2 <- tibble(links)
+
+# Post links ------------
+library(stringr)
+
+beppe_posts <- str_extract_all(links, pattern= "^https://beppegrillo.it/.")
