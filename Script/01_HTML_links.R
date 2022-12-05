@@ -4,12 +4,9 @@ library(tidyverse)
 url_beppe_blog <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
 download.file(url, destfile = here::here("beppeblog.html"))
 
-links <- read_html(here::here("beppeblog.html")) %>%
-  html_elements(css = "a")%>% 
-  html_text(trim = TRUE)
+#XML function -------------------
+library(XML)
 
-links2 <- as_tibble(links)
+links <- XML::getHTMLLinks(doc= beppe_page, externalOnly = T, relative = F)
 
-library(stringr)
-
-posts_link <- str_view_all(links2, pattern= "https://beppegrillo.it/.")
+links2 <- tibble(links)
