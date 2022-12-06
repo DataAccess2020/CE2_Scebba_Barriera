@@ -357,8 +357,9 @@ display: none;
 </div>
 
 
-<div id="ce2_scebba_barriera" class="section level2">
-<h2>CE2_Scebba_Barriera</h2>
+<div id="section" class="section level2">
+<h2></h2>
+<p>Spider-Wo-Men: with great power comes greatresponsibility</p>
 <p><em>Task 1</em></p>
 <p>A robots.txt file can be visualised for any given website just by
 typing the full URL for the homepage and then adding /robots.txt.</p>
@@ -368,10 +369,73 @@ a single title: “404 not found”, which means that it might be on located
 at a different URL or just it’s not found in the website.</p>
 <p><em>Task 2</em></p>
 <p>Using the function:</p>
-<pre class="r"><code>rcurl::getURL()</code></pre>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
+<pre class="r"><code>beppe_page &lt;- RCurl::getURL(url=url, httpheader=c(from=email, &#39;User-Agent&#39;= user_agent))</code></pre>
+<p>we downloaded the page by informing the webmaster about our browser
+details, by submitting our: url, email and user-agent.</p>
+<p><em>Task 3</em></p>
+<p>After downloading the page using these functions:</p>
+<pre class="r"><code>url_beppe_blog &lt;- &quot;https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/&quot;
+
+download.file(url, destfile = here::here(&quot;beppeblog.html&quot;))
+
+links &lt;- XML::getHTMLLinks(doc= beppe_page, externalOnly = T, relative = F)</code></pre>
+<p>Then we created the data frame by using the function:</p>
+<pre class="r"><code>links2 &lt;- tibble(links)</code></pre>
+<p>After we got all the links (104), we wanted to keep only those that
+re-direct to other posts of the blog itself, in order to do so we used a
+regular expression by the package “stringr”:</p>
+<pre class="r"><code>beppe_posts &lt;- str_extract_all(links, pattern= &quot;^https://beppegrillo.it/.&quot;)</code></pre>
+<p><em>Task 4</em></p>
+<p>We look at the beppegrillo.it archive of all the posts of 2016.</p>
+<p>For each of the 47 pages, we got the link and placed it into a
+character vector:</p>
+<pre class="r"><code>links_2016 &lt;- str_c(&quot;https://beppegrillo.it/category/archivio/2016/page/&quot;, 1:47) </code></pre>
+<p>For each single linked blog post we wanted to download the page as a
+file. In order to do so, we created a “download_politely” function:</p>
+<pre class="r"><code>download_politely &lt;- function(from_url, to_html , my_email, my_agent = R.Version()$version.string) {
+  
+require(httr)
+  
+  stopifnot(is.character(from_url))
+  stopifnot(is.character(to_html))
+  stopifnot(is.character(my_email))
+
+req &lt;- httr::GET(url = from_url,
+                  add_headers(
+                    From = my_email,
+                    `User-Agent` = R.Version()$version.string
+                  ))
+
+
+if (httr::http_status(req)$message == &quot;Success: (200) OK&quot;) {
+  bin &lt;- content(req, as = &quot;raw&quot;)
+  writeBin(object = bin, con = to_html)
+  } else {
+  cat(&quot;Houston, we have a problem!&quot;)
+  }
+}</code></pre>
+<p>Then we created a loop to download each page</p>
+<pre class="r"><code>for (i in seq_along(links_2016)) {
+  cat(i, &quot; &quot;)
+  
+  download_politely(from_url = links_2016[i],
+                    to_html = here::here(&quot;post_2016&quot;, str_c(&quot;page_&quot;,i,&quot;.html&quot;)),
+                    my_email= &quot;barrieragaia.uni@gmail.com&quot;)
+  
+  Sys.sleep(2)
+}</code></pre>
+<p>At last, we scraped the main text for each downloaded page</p>
+<pre class="r"><code>scrape &lt;- list.files(here::here(&quot;post_2016&quot;), full.names = TRUE)
+
+all_pages &lt;- vector(mode = &quot;list&quot;, length = length(scrape))
+
+for (i in seq_along(all_pages)){
+  all_pages[[i]] &lt;- read_html(scrape[i]) %&gt;%
+    html_elements(css = &quot;.td-excerpt&quot;) %&gt;%
+    html_text(trim = TRUE)
+}
+
+all_pages[[1]</code></pre>
 </div>
 
 

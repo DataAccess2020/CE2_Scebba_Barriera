@@ -22,7 +22,7 @@ While we were trying to crawl, after typing <https://beppegrillo.it/robots.txt> 
 
 Using the function:
 
-```{r pressure, eval=FALSE}
+```{r, eval=FALSE}
 beppe_page <- RCurl::getURL(url=url, httpheader=c(from=email, 'User-Agent'= user_agent))
 ```
 
@@ -32,7 +32,7 @@ we downloaded the page by informing the webmaster about our browser details, by 
 
 After downloading the page using these functions:
 
-```{r pressure, eval=FALSE}
+```{r, eval=FALSE}
 url_beppe_blog <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
 
 download.file(url, destfile = here::here("beppeblog.html"))
@@ -42,13 +42,84 @@ links <- XML::getHTMLLinks(doc= beppe_page, externalOnly = T, relative = F)
 
 Then we created the data frame by using the function:
 
-```{r pressure, eval=FALSE}
-inks2 <- tibble(links)
+```{r, eval=FALSE}
+links2 <- tibble(links)
 ```
 
 After we got all the links (104), we wanted to keep only those that re-direct to other posts of the blog itself, in order to do so we used a regular expression by the package "stringr":
 
-```{r pressure, eval=FALSE}
+```{r, eval=FALSE}
 beppe_posts <- str_extract_all(links, pattern= "^https://beppegrillo.it/.")
+
+```
+
+*Task 4*
+
+We look at the beppegrillo.it archive of all the posts of 2016. 
+
+For each of the 47 pages, we got the link and placed it into a character vector:
+
+```{r, eval=FALSE}
+links_2016 <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47) 
+
+```
+
+For each single linked blog post we wanted to download the page as a file. In order to do so, we created a "download_politely" function:
+
+```{r, eval=FALSE}
+download_politely <- function(from_url, to_html , my_email, my_agent = R.Version()$version.string) {
+  
+require(httr)
+  
+  stopifnot(is.character(from_url))
+  stopifnot(is.character(to_html))
+  stopifnot(is.character(my_email))
+
+req <- httr::GET(url = from_url,
+                  add_headers(
+                    From = my_email,
+                    `User-Agent` = R.Version()$version.string
+                  ))
+
+
+if (httr::http_status(req)$message == "Success: (200) OK") {
+  bin <- content(req, as = "raw")
+  writeBin(object = bin, con = to_html)
+  } else {
+  cat("Houston, we have a problem!")
+  }
+}
+
+```
+
+Then we created a loop to download each page
+
+```{r, eval=FALSE}
+for (i in seq_along(links_2016)) {
+  cat(i, " ")
+  
+  download_politely(from_url = links_2016[i],
+                    to_html = here::here("post_2016", str_c("page_",i,".html")),
+                    my_email= "barrieragaia.uni@gmail.com")
+  
+  Sys.sleep(2)
+}
+
+```
+
+At last, we scraped the main text for each downloaded page 
+
+```{r, eval=FALSE}
+scrape <- list.files(here::here("post_2016"), full.names = TRUE)
+
+all_pages <- vector(mode = "list", length = length(scrape))
+
+for (i in seq_along(all_pages)){
+  all_pages[[i]] <- read_html(scrape[i]) %>%
+    html_elements(css = ".td-excerpt") %>%
+    html_text(trim = TRUE)
+}
+
+all_pages[[1]
 
 ```
