@@ -7,12 +7,6 @@ library(httr)
 url_archive <- "https://beppegrillo.it/category/archivio/2016/page/"
 
 
-
-
-links_2016 <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47) 
-links_2016
-
-
 #creating a download_politely function
 
 download_politely <- function(from_url, to_html , my_email, my_agent = R.Version()$version.string) {
@@ -39,17 +33,15 @@ if (httr::http_status(req)$message == "Success: (200) OK") {
 }
 
 
-download.file(url="https://beppegrillo.it/category/archivio/2016/", 
-              destfile= here::here ("archive_2016.html"))
 
-
+#building the list of liks for each page
 
 require(stringr)
 links_2016 <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47) 
 dir.create("post_2016")
 
 
-#creating the loop
+#creating the loop for each page
 
 for (i in seq_along(links_2016)) {
   cat(i, " ")
