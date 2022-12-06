@@ -1,0 +1,54 @@
+---
+title: "CE2_Scebba_Barriera"
+author: "Barriera G. & Scebba S."
+date: "2022-12-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+Spider-Wo-Men: with great power comes greatresponsibility
+
+*Task 1*
+
+A robots.txt file can be visualised for any given website just by typing the full URL for the homepage and then adding /robots.txt.
+
+While we were trying to crawl, after typing <https://beppegrillo.it/robots.txt> we noticed that the result was not found, in fact the page that we visualized was blank with a single title: "404 not found", which means that it might be on located at a different URL or just it's not found in the website.
+
+*Task 2*
+
+Using the function:
+
+```{r pressure, eval=FALSE}
+beppe_page <- RCurl::getURL(url=url, httpheader=c(from=email, 'User-Agent'= user_agent))
+```
+
+we downloaded the page by informing the webmaster about our browser details, by submitting our: url, email and user-agent.
+
+*Task 3*
+
+After downloading the page using these functions:
+
+```{r pressure, eval=FALSE}
+url_beppe_blog <- "https://beppegrillo.it/un-mare-di-plastica-ci-sommergera/"
+
+download.file(url, destfile = here::here("beppeblog.html"))
+
+links <- XML::getHTMLLinks(doc= beppe_page, externalOnly = T, relative = F)
+```
+
+Then we created the data frame by using the function:
+
+```{r pressure, eval=FALSE}
+inks2 <- tibble(links)
+```
+
+After we got all the links (104), we wanted to keep only those that re-direct to other posts of the blog itself, in order to do so we used a regular expression by the package "stringr":
+
+```{r pressure, eval=FALSE}
+beppe_posts <- str_extract_all(links, pattern= "^https://beppegrillo.it/.")
+
+```
