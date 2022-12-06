@@ -436,6 +436,38 @@ for (i in seq_along(all_pages)){
 }
 
 all_pages[[1]</code></pre>
+<p><em>Task 5</em></p>
+<p>What does it mean to crawl?</p>
+<p>Literally, crawling means the action of moving along with hands and
+knees or with the body stretched out along along a surface, but for
+online crawling we intend the process of utilizing a software or
+automated script to index data on web sites. These automated scripts or
+programs are sometimes referred to as web crawlers, spiders, spider
+bots, or just crawlers.</p>
+<p>What is it a “web spider”?</p>
+<p>A web spider can be also defined as a web crawler - or spiderbot. In
+essence, a spider is a computer software that gathers data from the
+World Wide Web. Crawling over websites’ pages, it gathers information
+and indexes it for use later, often for search engine results.</p>
+<p>How is it different from a scraper?</p>
+<p>The main difference can be found in the function that they fulfill,
+because meanwhile scraping is about extracting data from one or more
+websites and only take those data that needs to be extracted, meanwhile
+crawling helps finding/discovering URLs, storing every piece of
+information.</p>
+<p>Which function(s) should you use to crawl?</p>
+<p>We can use the package “rcrawler” - which requires
+system(“java-version”).</p>
+<p>Let’s suppose that we wanto to extracted link from a certain site and
+we also want to take those links that are external, meaning that they
+point to other sites, we can use the function:</p>
+<pre class="r"><code>LinkExtractor(url=&quot;the_url_of_the_page&quot;, ExternalLinks = TRUE)</code></pre>
+<p>If we wanto to extract parameters and values from our URL we can use
+the function:</p>
+<pre class="r"><code>Linkparameters(URL)</code></pre>
+<p>However, Rcrawler contains a lot of different functions and features
+that can be used while crawling and it depends on the type of research
+that we are trying to conduct.</p>
 </div>
 
 
