@@ -8,7 +8,6 @@ url_archive <- "https://beppegrillo.it/category/archivio/2016/page/"
 
 
 
-# all the links placed into a character vector
 
 links_2016 <- str_c("https://beppegrillo.it/category/archivio/2016/page/", 1:47) 
 links_2016
@@ -25,14 +24,13 @@ require(httr)
   stopifnot(is.character(my_email))
 
 req <- httr::GET(url = from_url,
-                 add_headers(
-                   From = my_email,
-                   `User-Agent` = R.Version()$version.string
-                   )
-                  )
+                  add_headers(
+                    From = my_email,
+                    `User-Agent` = R.Version()$version.string
+                  ))
 
 
-if (httr::http_status(req)$message == "Success: (47) OK") {
+if (httr::http_status(req)$message == "Success: (200) OK") {
   bin <- content(req, as = "raw")
   writeBin(object = bin, con = to_html)
   } else {
